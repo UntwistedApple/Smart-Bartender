@@ -1,6 +1,4 @@
 # Smart Bartender with Adafruit SSD1306
-Why spend lots of money going out for drinks when you can have your own smart personal bartender at your service right in your home?! This bartender is built from a Raspberry Pi 3 and some common DIY electronics.
-
 
 Make sure the following are installed:
 * Python 2.7 (should already be installed on most Raspberry Pi)
