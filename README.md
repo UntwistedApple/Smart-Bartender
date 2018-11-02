@@ -19,7 +19,7 @@ See this [article](https://www.raspberrypi.org/documentation/hardware/raspberryp
 Make sure i2c is also configured properly. Type
 
 ```
-sudo vim /etc/modules
+sudo nano /etc/modules
 ```
 
 in the terminal
@@ -132,7 +132,7 @@ from the repository folder. Copy this to your clipboard.
 Next, type
 
 ```
-sudo vim /etc/rc.local
+sudo nano /etc/rc.local
 ```
 
 to open the rc.local file. Next, press `i` to edit. Before the last line, add the following two lines:
