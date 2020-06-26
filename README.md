@@ -8,6 +8,7 @@ I changed a lot for my circumstances.
 
 More incoming and regularily updated! If you want to add something. Do it. I maintain this repo normally. Thanks.
 
+Attention: By default the LED strip is deactivated. Just uncomment the line 110 to activate the normal LED function.
 
 # Smart Bartender with Adafruit SSD1306
 
