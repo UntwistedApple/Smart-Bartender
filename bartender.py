@@ -7,6 +7,8 @@ import RPi.GPIO as GPIO
 import json
 import traceback
 import threading
+import textwrap
+import subprocess
 
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
@@ -30,15 +32,12 @@ LEFT_PIN_BOUNCE = 200
 RIGHT_BTN_PIN = 5
 RIGHT_PIN_BOUNCE = 200
 
-OLED_RESET_PIN = 15
-OLED_DC_PIN = 16
-
 NUMBER_NEOPIXELS = 45
 NEOPIXEL_DATA_PIN = 26
 NEOPIXEL_CLOCK_PIN = 6
 NEOPIXEL_BRIGHTNESS = 64
 
-FLOW_RATE = 60.0/1500.0
+FLOW_RATE = 60.0/500.0
 
 # Raspberry Pi pin configuration:
 RST = 14
@@ -47,6 +46,12 @@ DC = 15
 SPI_PORT = 0
 SPI_DEVICE = 0
 
+#Fontsize and Font Type Settings
+FONTSIZE = 15	
+FONTFILE = "InputSans-Regular.ttf"
+
+#Wraps Text for better view on OLED screen. 13 is best for 128x64
+WRAPPER = textwrap.TextWrapper(width=13)
 
 class Bartender(MenuDelegate): 
 	def __init__(self):
@@ -67,7 +72,7 @@ class Bartender(MenuDelegate):
 		spi_bus = 0
 		spi_device = 0
 
-		# Very important... This lets py-gaugette 'know' what pins to use in order to reset the display
+        #Load the display driver. Attention: 128_64 is the display size. Needed to be changed if different in your setup
 		self.led = disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000)) # Change rows & cols values depending on your display dimensions.
 		
 		# Initialize library.
@@ -82,8 +87,9 @@ class Bartender(MenuDelegate):
 		# Make sure to create image with mode '1' for 1-bit color.
 		self.image = Image.new('1', (self.screen_width, self.screen_height))
 
-		# Load default font.
-		self.font = ImageFont.load_default()
+		# Load default font.	
+		#self.font = ImageFont.load_default()
+		self.font = ImageFont.truetype(FONTFILE, FONTSIZE)
 
 		# Create drawing object.
 		self.draw = ImageDraw.Draw(self.image)
@@ -100,7 +106,8 @@ class Bartender(MenuDelegate):
 		datapin  = NEOPIXEL_DATA_PIN
 		clockpin = NEOPIXEL_CLOCK_PIN
 		self.strip = Adafruit_DotStar(self.numpixels, datapin, clockpin)
-		self.strip.begin()           # Initialize pins for output
+		#Auskommentiert solange noch kein LED Strip angebracht.		
+		#self.strip.begin()           # Initialize pins for output
 		self.strip.setBrightness(NEOPIXEL_BRIGHTNESS) # Limit brightness to ~1/4 duty cycle
 
 		# turn everything off
@@ -131,7 +138,7 @@ class Bartender(MenuDelegate):
 		drink_opts = []
 		for d in drink_list:
 			drink_opts.append(MenuItem('drink', d["name"], {"ingredients": d["ingredients"]}))
-
+		
 		configuration_menu = Menu("Configure")
 
 		# add pump configuration options
@@ -151,13 +158,17 @@ class Bartender(MenuDelegate):
 		# add pump menus to the configuration menu
 		configuration_menu.addOptions(pump_opts)
 		# add a back button to the configuration menu
-		configuration_menu.addOption(Back("Zurück"))
+		configuration_menu.addOption(Back("Back"))
 		# adds an option that cleans all pumps to the configuration menu
 		configuration_menu.addOption(MenuItem('clean', 'Clean'))
+		# adds an option that shuts down the rpi
+		configuration_menu.addOption(MenuItem('shutdown', 'Shutdown'))
+
 		configuration_menu.setParent(m)
 
 		m.addOptions(drink_opts)
 		m.addOption(configuration_menu)
+
 		# create a menu context
 		self.menuContext = MenuContext(m, self)
 
@@ -209,6 +220,9 @@ class Bartender(MenuDelegate):
 		elif(menuItem.type == "clean"):
 			self.clean()
 			return True
+		elif(menuItem.type == "shutdown"):
+			self.shutdown()
+			return True
 		return False
 
 	def clean(self):
@@ -240,12 +254,36 @@ class Bartender(MenuDelegate):
 		# sleep for a couple seconds to make sure the interrupts don't get triggered
 		time.sleep(2);
 
+	def shutdown(self):
+		shutdowntext = "Shutdown takes 10 seconds. Bye!"
+		self.led.clear()
+		self.draw.rectangle((0,0,self.screen_width,self.screen_height), outline=0, fill=0)
+
+		words_list = WRAPPER.wrap(text=shutdowntext)
+		TextNew = ''		
+		for ii in words_list[:-1]:
+			TextNew = TextNew + ii + "\n"
+		TextNew += words_list[-1]
+		self.draw.text((0,10),str(TextNew), font=self.font, fill=255)
+		self.led.image(self.image)
+		self.led.display()
+		time.sleep(5);
+
+		#Clean shutdown device
+		subprocess.Popen(['shutdown','-h','now'])
+
 
 	def displayMenuItem(self, menuItem):
 		print menuItem.name
 		self.led.clear()
 		self.draw.rectangle((0,0,self.screen_width,self.screen_height), outline=0, fill=0)
-		self.draw.text((0,20),str(menuItem.name), font=self.font, fill=255)
+
+		words_list = WRAPPER.wrap(text=menuItem.name)
+		MenuItemNew = ''		
+		for ii in words_list[:-1]:
+			MenuItemNew = MenuItemNew + ii + "\n"
+		MenuItemNew += words_list[-1]
+		self.draw.text((0,10),str(MenuItemNew), font=self.font, fill=255)
 		self.led.image(self.image)
 		self.led.display()
 
