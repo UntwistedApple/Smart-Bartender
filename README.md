@@ -1,3 +1,14 @@
+# Fork informations
+This is my fork of the "Smart Bartender" project because the original and already forked projects are not maintained anymore.
+I changed a lot for my circumstances. 
+
+- Added custom font InputSans
+- Added text wrap to get more text displayed on the OLED display
+- Added a shutdown function to not break the microSD card in any way
+
+More incoming and regularily updated! If you want to add something. Do it. I maintain this repo normally. Thanks.
+
+
 # Smart Bartender with Adafruit SSD1306
 
 Make sure the following are installed:
