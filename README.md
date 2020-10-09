@@ -12,10 +12,11 @@ This fork is also compatible to python3 which is the standard python on modern r
 
 Attention: By default the LED strip is deactivated. Just uncomment the line 110 to activate the normal LED function.
 
+(Original readme from the forked origin project)
 # Smart Bartender with Adafruit SSD1306
 
 Make sure the following are installed:
-* Python 2.7 (should already be installed on most Raspberry Pi)
+* Python  (should already be installed on most Raspberry Pi)
 * [pip](https://www.raspberrypi.org/documentation/linux/software/python.md)
 
 ### Enable SPI
