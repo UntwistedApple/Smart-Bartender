@@ -63,9 +63,9 @@ class Bartender(MenuDelegate):
 
 		self.btn1Pin = LEFT_BTN_PIN
 		self.btn2Pin = RIGHT_BTN_PIN
-	 
-	 	# configure interrups for buttons
-	 	GPIO.setup(self.btn1Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+		# configure interrups for buttons
+		GPIO.setup(self.btn1Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.btn2Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
 
 		# configure screen
