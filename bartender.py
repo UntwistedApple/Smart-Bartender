@@ -406,7 +406,7 @@ class Bartender(MenuDelegate):
 			try: 
 
 				while True:
-					letter = raw_input(">")
+					letter = input(">")
 					if letter == "l":
 						self.left_btn(False)
 					if letter == "r":
