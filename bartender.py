@@ -17,7 +17,6 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-from dotstar import Adafruit_DotStar
 from menu import MenuItem, Menu, Back, MenuContext, MenuDelegate
 from drinks import drink_list, drink_options
 
@@ -73,7 +72,7 @@ class Bartender(MenuDelegate):
 		spi_device = 0
 
         #Load the display driver. Attention: 128_64 is the display size. Needed to be changed if different in your setup
-		self.led = disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000)) # Change rows & cols values depending on your display dimensions.
+		self.led = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000)) # Change rows & cols values depending on your display dimensions.
 		
 		# Initialize library.
 		self.led.begin()
@@ -98,22 +97,6 @@ class Bartender(MenuDelegate):
 		self.pump_configuration = Bartender.readPumpConfiguration()
 		for pump in self.pump_configuration.keys():
 			GPIO.setup(self.pump_configuration[pump]["pin"], GPIO.OUT, initial=GPIO.HIGH)
-
-		# setup pixels:
-		self.numpixels = NUMBER_NEOPIXELS # Number of LEDs in strip
-
-		# Here's how to control the strip from any two GPIO pins:
-		datapin  = NEOPIXEL_DATA_PIN
-		clockpin = NEOPIXEL_CLOCK_PIN
-		self.strip = Adafruit_DotStar(self.numpixels, datapin, clockpin)
-		#Auskommentiert solange noch kein LED Strip angebracht.		
-		#self.strip.begin()           # Initialize pins for output
-		self.strip.setBrightness(NEOPIXEL_BRIGHTNESS) # Limit brightness to ~1/4 duty cycle
-
-		# turn everything off
-		for i in range(0, self.numpixels):
-			self.strip.setPixelColor(i, 0)
-		self.strip.show() 
 
 		print("Done initializing")
 
