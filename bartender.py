@@ -274,7 +274,7 @@ class Bartender(MenuDelegate):
 
 
 	def displayMenuItem(self, menuItem):
-		print menuItem.name
+		print(menuItem.name)
 		self.led.clear()
 		self.draw.rectangle((0,0,self.screen_width,self.screen_height), outline=0, fill=0)
 
