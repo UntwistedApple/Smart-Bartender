@@ -65,7 +65,7 @@ class Bartender(MenuDelegate):
 
 		# configure interrups for buttons
 		GPIO.setup(self.btn1Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-		GPIO.setup(self.btn2Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
+		GPIO.setup(self.btn2Pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 		# configure screen
 		spi_bus = 0
@@ -335,7 +335,7 @@ class Bartender(MenuDelegate):
 			self.running = True
 			self.menuContext.advance()
 			print("Finished processing button press")
-		self.running = False
+			self.running = False
 
 	def right_btn(self, ctx):
 		print("RIGHT_BTN pressed")
